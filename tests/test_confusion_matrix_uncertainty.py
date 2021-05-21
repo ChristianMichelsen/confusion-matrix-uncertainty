@@ -1,5 +1,11 @@
-from confusion_matrix_uncertainty import __version__
+from typer.testing import CliRunner
+
+from confusion_matrix_uncertainty.main import app
+
+runner = CliRunner()
 
 
-def test_version():
-    assert __version__ == '0.1.0'
+def test_app():
+    result = runner.invoke(app, ["--help"])
+    assert result.exit_code == 0
+    assert "--install-completion" in result.stdout

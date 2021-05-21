@@ -1,10 +1,10 @@
+from pathlib import Path
+
+import arviz
 import numpy as np
 import pandas as pd
 import sympy
-import arviz
 import typer
-from pathlib import Path
-
 
 # CODE COPIED FROM https://github.com/niklastoe/classifier_metric_uncertainty
 
@@ -20,7 +20,7 @@ symbol_order = "TP FN TN FP".split()
 tp, fn, tn, fp = cm_elements = sympy.symbols(symbol_order)
 n = sum(cm_elements)
 
-distribution_samples=int(2e4)
+distribution_samples = int(2e4)
 
 
 class BetaBinomialDist(object):
@@ -230,19 +230,21 @@ def get_metric_dictionary():
 
 #%%
 
+
 def compare_classifiers(cm_analyser, cm_analyser2, metric="MCC"):
     is_better = cm_analyser.theta_metrics[metric] > cm_analyser2.theta_metrics[metric]
     return is_better.mean()
 
+
 #%%
 
+
 @app.command()
-def main(filename: Path, metric: str = 'MCC'):
+def main(filename: Path, metric: str = "MCC"):
 
     """
     Compare the different models using METRIC, optionally with a --metric.
     """
-
 
     df = pd.read_csv(filename, index_col=0)
 
@@ -257,8 +259,3 @@ def main(filename: Path, metric: str = 'MCC'):
         analyser = ConfusionMatrixAnalyser(cm)
         P = compare_classifiers(analyser, cm_analyser_ML, metric=metric)
         typer.echo(f"{model+':':35s} \t {metric}, P = {P:.2%}")
-
-
-
-# if __name__ == "__main__":
-# app.command()
