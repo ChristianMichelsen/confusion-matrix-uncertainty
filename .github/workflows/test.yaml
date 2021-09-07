@@ -1,11 +1,26 @@
-name: test
+name: Test
 
 # on: pull_request
-on: push
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 
 jobs:
+
+  black-formatting-check:
+    name: Check formatting
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+      - uses: psf/black@stable
+
   test:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -59,4 +74,4 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          poetry run pytest tests/
+          poetry run pytest -v

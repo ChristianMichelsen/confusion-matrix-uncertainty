@@ -22,6 +22,8 @@ n = sum(cm_elements)
 
 distribution_samples = int(2e4)
 
+np.random.seed(42)
+
 
 class BetaBinomialDist(object):
     def __init__(self, k, j, prior=(0, 0)):
@@ -240,15 +242,20 @@ def compare_classifiers(cm_analyser, cm_analyser2, metric="MCC"):
 
 
 @app.command()
-def main(filename: Path, metric: str = "MCC"):
+def main(
+    filename: Path,
+    key: str = "ML",
+    metric: str = "MCC",
+):
 
     """
     Compare the different models using METRIC, optionally with a --metric.
+    Choose e.g. ACC, MCC, F1, BM, or MK
     """
 
     df = pd.read_csv(filename, index_col=0)
 
-    cm_ML = df.loc["ML__exclude_hospital", ["TP", "FN", "TN", "FP"]]
+    cm_ML = df.loc[key, ["TP", "FN", "TN", "FP"]]
     cm_analyser_ML = ConfusionMatrixAnalyser(cm_ML)
 
     # cm_analyser_ML.theta_samples
